@@ -44,10 +44,16 @@ class AsyncAPISpecV3Generator(AsyncAPISpecGenerator):
                 schema_name = topic_schema.__name__
                 message_name = topic_schema.__name__
 
-                json_schema: str = topic_schema.schema_json()
+                json_schema: str = topic_schema.model_json_schema()
                 json_schema = json_schema.replace(
                     "#/definitions", f"#/components/schemas/{schema_name}/definitions"
                 )
+
+                # Fix schema path in pydantic 2
+                json_schema = json_schema.replace(
+                    '"#/$defs/', f'"#/components/schemas/{schema_name}/$defs/'
+                )
+
                 schemas[schema_name] = json.loads(json_schema)
                 messages[message_name] = {
                     "payload": {"$ref": f"#/components/schemas/{schema_name}"}
@@ -63,7 +69,6 @@ class AsyncAPISpecV3Generator(AsyncAPISpecGenerator):
                 "channel": {"$ref": f"#/channels/{channel_name}"},
             }
             operations[action_name].update(tags)
-
 
         for topic, topic_schemas in self.asyncapi_spec_container.receives.items():
             channel_additional_info = {}
@@ -90,6 +95,10 @@ class AsyncAPISpecV3Generator(AsyncAPISpecGenerator):
                 json_schema: str = topic_schema.schema_json()
                 json_schema = json_schema.replace(
                     "#/definitions", f"#/components/schemas/{schema_name}/definitions"
+                )
+                # Fix schema path in pydantic 2
+                json_schema = json_schema.replace(
+                    '"#/$defs/', f'"#/components/schemas/{schema_name}/$defs/'
                 )
                 schemas[schema_name] = json.loads(json_schema)
                 messages[message_name] = {

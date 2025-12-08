@@ -44,7 +44,7 @@ def retrieve_asyncapi_spec_containers(asyncapi_spec_classes: list[Type[SimpleSpe
     return asyncapi_spec_classes
 
 
-def retrieve_merged_asyncapi_container() -> SimpleSpecV3:
-    asyncapi_spec_containers = retrieve_asyncapi_spec_containers()
+def retrieve_merged_asyncapi_container(asyncapi_spec_classes) -> SimpleSpecV3:
+    asyncapi_spec_containers = retrieve_asyncapi_spec_containers(asyncapi_spec_classes=asyncapi_spec_classes)
     merger = BusRoutingsMerger()
     return merger.merge(asyncapi_specs=asyncapi_spec_containers)
