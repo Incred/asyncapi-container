@@ -1,8 +1,6 @@
 from pydantic import BaseModel, Field
 
-from asyncapi_container.asyncapi.spec.v3.info import Info
 from asyncapi_container.asyncapi.spec.v3.tag import Tag
-from asyncapi_container.custom_types import RoutingMap
 
 
 class TopicV3(BaseModel):
